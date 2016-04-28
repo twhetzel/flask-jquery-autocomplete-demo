@@ -1,0 +1,95 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+
+<style>
+.ui-helper-hidden-accessible { border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px; 
+}
+.ui-autocomplete .highlight {
+	text-decoration: underline;
+}
+.fixed-height {
+			padding: 1px;
+			max-height: 200px;
+			overflow: auto;
+		}
+</style>
+
+<div class="container">
+	Autocomplete Demo: <input name="autocomplete" type="text" id="autocomplete" placeholder="Type to activate autocomplete, e.g. car"></input>
+</div>
+
+<script type="text/javascript">
+// From: http://stackoverflow.com/questions/17365821/using-jquery-autocomplete-with-flask
+// Highlight matched text: http://salman-w.blogspot.com/2013/12/jquery-ui-autocomplete-examples.html#example-4
+$(function() {
+	function highlightText(text, $node) {
+				var searchText = $.trim(text).toLowerCase(), currentNode = $node.get(0).firstChild, matchIndex, newTextNode, newSpanNode;
+				while ((matchIndex = currentNode.data.toLowerCase().indexOf(searchText)) >= 0) {
+					newTextNode = currentNode.splitText(matchIndex);
+					currentNode = newTextNode.splitText(searchText.length);
+					newSpanNode = document.createElement("span");
+					newSpanNode.className = "highlight";
+					currentNode.parentNode.insertBefore(newSpanNode, currentNode);
+					newSpanNode.appendChild(newTextNode);
+				}
+			}
+    $.ajax({
+        url: '{{ url_for("autocomplete") }}'
+        }).done(function (data) {
+            $('#autocomplete').autocomplete({
+            	//source: data.json_list,
+				source: data.matching_results,			 
+            	minLength: 2
+            }).data("ui-autocomplete")._renderItem = function(ul, item) {
+				var $a = $("<a></a>").text(item.label);
+				highlightText(this.term, $a);
+				return $("<li></li>").append($a).appendTo(ul);
+			};
+        });
+    });
+
+
+// From: http://stackoverflow.com/questions/34704997/jquery-autocomplete-in-flask?rq=1
+// $(function() {
+// 	function highlightText(text, $node) {
+// 				var searchText = $.trim(text).toLowerCase(), currentNode = $node.get(0).firstChild, matchIndex, newTextNode, newSpanNode;
+// 				while ((matchIndex = currentNode.data.toLowerCase().indexOf(searchText)) >= 0) {
+// 					newTextNode = currentNode.splitText(matchIndex);
+// 					currentNode = newTextNode.splitText(searchText.length);
+// 					newSpanNode = document.createElement("span");
+// 					newSpanNode.className = "highlight";
+// 					currentNode.parentNode.insertBefore(newSpanNode, currentNode);
+// 					newSpanNode.appendChild(newTextNode);
+// 				}
+// 			}
+//     $("#autocomplete").autocomplete({
+//         source:function(request, response) {
+//             $.getJSON("{{url_for('autocomplete')}}",{
+//                 q: request.term, // in flask, "q" will be the argument to look for using request.args
+//             }, function(data) {
+//                 response(data.matching_results); // matching_results from jsonify
+//             });
+//         },
+//         minLength: 2,
+//         select: function(event, ui) {
+//             console.log(ui.item.value); // not in your question, but might help later
+//         }
+//     //}).autocomplete("widget").addClass("fixed-height"); //Scroll selections
+//     // Highlight individual items in matched text
+//     }).data("ui-autocomplete")._renderItem = function(ul, item) {
+//     	var $a = $("<a></a>").text(item.label);
+//     	highlightText(this.term, $a);
+// 		return $("<li></li>").append($a).appendTo(ul);
+// 	};
+// });
+</script>
+
+{% endblock %}
