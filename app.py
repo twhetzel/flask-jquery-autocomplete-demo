@@ -21,9 +21,29 @@ def autocomplete():
 		{'value': 'MIR:00000111', 'label': 'Resource 1'}, {'value': 'MIR:00000222', 'label': 'Resource 2'}, \
 		{'value': 'MIR:00000333', 'label': 'Resource 3'}, {'value': 'MIR:00000444', 'label': 'Resource 4'}, \
 		{'value': 'MIR:00000555', 'label': 'Resource 5'}, {'value': 'MIR:00000666', 'label': 'Resource 6'}]
+
 	return jsonify(matching_results=results)
 	#results = ["car", "carriage", "horse", "dog"]
 	#return jsonify(matching_results=results)
+
+
+# Autocomplete with categories
+@app.route('/catcomplete', methods=['GET'])
+def catcomplete():
+	search = request.args.get('q')
+
+	category_data = [
+      { 'label': 'anders', 'category': '' },
+      { 'label': 'andreas', 'category': '' },
+      { 'label': 'antal', 'category': '' },
+      { 'label': 'annhhx10', 'category': 'Products' },
+      { 'label': 'annk K12', 'category': 'Products' },
+      { 'label': 'annttop C13', 'category': 'Products' },
+      { 'label': 'anders andersson', 'category': 'People' },
+      { 'label': 'andreas andersson', 'category': 'People' },
+      { 'label': 'andreas johnson', 'category': 'People' }
+    ];
+	return jsonify(category_data=category_data)
 
 
 # Route to home page
