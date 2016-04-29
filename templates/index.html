@@ -21,6 +21,16 @@
 	max-height: 200px;
 	overflow: auto;
 }
+.ui-autocomplete-category {
+	font-weight: bold;
+	padding: .2em .4em;
+	margin: .8em 0 .2em;
+	line-height: 1.5;
+}
+.ui-autocomplete .highlight {
+	text-decoration: underline;
+	color: orange;
+}
 </style>
 
 <br><br>
@@ -30,8 +40,8 @@
 </div>
 <br><br><br><br>
 <div class="container">
-	Autocomplete Demo: <label for="search"></label>
-	<input id="search"></input>
+	Category Autocomplete Demo: <label for="search"></label>
+	<input id="search" name="search" placeholder="Enter name, e.g. an"></input>
 </div>
 
 <script type="text/javascript">
@@ -91,13 +101,29 @@ $(function() {
 
 
   $(function() {
+  	function highlightText(text, $node) {
+				var searchText = $.trim(text).toLowerCase(), currentNode = $node.get(0).firstChild, matchIndex, newTextNode, newSpanNode;
+				while ((matchIndex = currentNode.data.toLowerCase().indexOf(searchText)) >= 0) {
+					newTextNode = currentNode.splitText(matchIndex);
+					currentNode = newTextNode.splitText(searchText.length);
+					newSpanNode = document.createElement("span");
+					newSpanNode.className = "highlight";
+					currentNode.parentNode.insertBefore(newSpanNode, currentNode);
+					newSpanNode.appendChild(newTextNode);
+				}
+			}
     $.ajax({
         url: '{{ url_for("catcomplete") }}'
         }).done(function (data) {
     $( "#search" ).catcomplete({
-      delay: 0,
-      source: data.category_data
-    });
+     	delay: 0,
+    	source: data.category_data
+    }).data("custom-catcomplete")._renderItem = function(ul, item) {
+    	var $a = $("<a></a>").text(item.label);
+		highlightText(this.term, $a);
+		console.log(this.term)
+		return $("<li></li>").append($a).appendTo(ul);
+		};
 	});
   });
 
