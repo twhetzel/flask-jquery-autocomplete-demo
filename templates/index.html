@@ -36,12 +36,12 @@
 <br><br>
 
 <div class="container">
-	Autocomplete Demo: <input name="autocomplete" type="text" id="autocomplete" placeholder="Type to activate autocomplete, e.g. Wormbase"></input>
+	Example 1 <br> Autocomplete Demo: <input name="autocomplete" type="text" id="autocomplete" placeholder="Select a resource or enter your own, e.g. Wormbase"></input>
 </div>
 <br><br><br><br>
 <div class="container">
-	Category Autocomplete Demo: <label for="search"></label>
-	<input id="search" name="search" placeholder="Enter name, e.g. an"></input>
+	Example 2 <br> Category Autocomplete Demo: <label for="search"></label>
+	<input id="search" name="search" placeholder="Select a resource or enter your own, e.g. Wormbase"></input>
 </div>
 
 <script type="text/javascript">
@@ -75,7 +75,7 @@ $(function() {
     });
 
 
-// Category autocomplete widget
+// Category autocomplete widget with matching text highlighting
 // https://jqueryui.com/autocomplete/#categories
   $.widget( "custom.catcomplete", $.ui.autocomplete, {
     _create: function() {
@@ -121,7 +121,7 @@ $(function() {
     }).data("custom-catcomplete")._renderItem = function(ul, item) {
     	var $a = $("<a></a>").text(item.label);
 		highlightText(this.term, $a);
-		console.log(this.term)
+		//console.log(this.term)
 		return $("<li></li>").append($a).appendTo(ul);
 		};
 	});
