@@ -34,12 +34,12 @@ def catcomplete():
  	category_data = [{'value': 'MIR:00000466', 'label': 'WormBase RNAi', 'category': 'Pattern Match'}, \
  	{'value': 'MIR:00000031', 'label': 'Wormpep', 'category': 'Pattern Match'}, \
  	{'value': 'MIR:00000186', 'label': 'Xenbase', 'category': 'Pattern Match'}, \
- 	{'value': 'MIR:00000111', 'label': 'Resource 1'}, \
- 	{'value': 'MIR:00000222', 'label': 'Resource 2'}, \
- 	{'value': 'MIR:00000333', 'label': 'Resource 3'}, \
- 	{'value': 'MIR:00000444', 'label': 'Resource 4'}, \
- 	{'value': 'MIR:00000555', 'label': 'Resource 5'}, \
- 	{'value': 'MIR:00000666', 'label': 'Resource 6'}]
+ 	{'value': 'MIR:00000111', 'label': 'Resource 1', 'category': ''}, \
+ 	{'value': 'MIR:00000222', 'label': 'Resource 2', 'category': ''}, \
+ 	{'value': 'MIR:00000333', 'label': 'Resource 3', 'category': ''}, \
+ 	{'value': 'MIR:00000444', 'label': 'Resource 4', 'category': ''}, \
+ 	{'value': 'MIR:00000555', 'label': 'Resource 5', 'category': ''}, \
+ 	{'value': 'MIR:00000666', 'label': 'Resource 6', 'category': ''}]
 	return jsonify(category_data=category_data)
 
 
