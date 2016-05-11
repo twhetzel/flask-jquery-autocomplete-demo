@@ -12,6 +12,34 @@ from flask import make_response
 app = Flask(__name__)
 
 
+# ** Example 3 ** 
+# Autocomplete method - called from Jinja template
+@app.route('/datcomplete', methods=['GET', 'POST'])
+def datcomplete():
+	print "** datcomplete() called"
+	if request.method == 'POST':
+		print "POST request"
+	else:
+		print "GET request"
+
+	# postData = request.form
+	# print "** MyVar:", postData
+	jsonData = request.json['variable']
+	print jsonData
+
+	new_data = [{'value': 'MIR:00000555', 'label': 'My WormBase RNAi'}, \
+		{'value': 'MIR:00000545', 'label': 'My Wormpep'}]
+
+	results = [{'value': 'MIR:00000466', 'label': 'WormBase RNAi'}, \
+		{'value': 'MIR:00000031', 'label': 'Wormpep'}, {'value': 'MIR:00000186', 'label': 'Xenbase'}, \
+		{'value': 'MIR:00000111', 'label': 'Resource 1'}, {'value': 'MIR:00000222', 'label': 'Resource 2'}, \
+		{'value': 'MIR:00000333', 'label': 'Resource 3'}, {'value': 'MIR:00000444', 'label': 'Resource 4'}]
+	
+	results.extend(new_data)	
+	return jsonify(matching_results=results)
+
+
+# ** Example 1 ** 
 # Autocomplete method - called from Jinja template
 @app.route('/autocomplete', methods=['GET'])
 def autocomplete():
@@ -27,6 +55,7 @@ def autocomplete():
 	#return jsonify(matching_results=results)
 
 
+# ** Example 2 **
 # Autocomplete with categories
 @app.route('/catcomplete', methods=['GET'])
 def catcomplete():
@@ -34,6 +63,7 @@ def catcomplete():
  	category_data = [{'value': 'MIR:00000466', 'label': 'WormBase RNAi', 'category': 'Pattern Match'}, \
  	{'value': 'MIR:00000031', 'label': 'Wormpep', 'category': 'Pattern Match'}, \
  	{'value': 'MIR:00000186', 'label': 'Xenbase', 'category': 'Pattern Match'}, \
+ 	{'value': 'MIR:00000466', 'label': 'WormBase RNAi', 'category': ''}, \
  	{'value': 'MIR:00000111', 'label': 'Resource 1', 'category': ''}, \
  	{'value': 'MIR:00000222', 'label': 'Resource 2', 'category': ''}, \
  	{'value': 'MIR:00000333', 'label': 'Resource 3', 'category': ''}, \
