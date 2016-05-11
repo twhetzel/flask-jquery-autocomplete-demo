@@ -43,10 +43,44 @@
 	Example 2 <br> Category Autocomplete Demo: <label for="search"></label>
 	<input id="search" name="search" placeholder="Select a resource or enter your own, e.g. Wormbase"></input>
 </div>
+<br><br><br><br>
+<div class="container">
+  Example 3 <br> Category Autocomplete Demo with Sending data to Autocomplete: <label for="search-post-data"></label>
+  <input id="search-post-data" name="search-post-data" placeholder="Select a resource or enter your own, e.g. Wormbase"></input>
+</div>
+
+
+<script type="text/javascript">
+// ** Example 3 **
+// Send data to autocomplete to dynamically extend data source
+$(function() {
+  var keypath = "My Test Keypath"
+  console.log(keypath)
+
+  $.ajax({
+        url: '{{ url_for("datcomplete") }}',
+        contentType: 'application/json',
+        method: "POST",
+        dataType : 'json',
+        data: JSON.stringify({variable:keypath})
+    }).done(function (data) {
+        $('#search-post-data').autocomplete({
+            source: data.matching_results,
+            minLength: 1
+        }).data("ui-autocomplete")._renderItem = function(ul, item) {
+          var $a = $("<a></a>").text(item.label);
+          //highlightText(this.term, $a);
+          return $("<li></li>").append($a).appendTo(ul);
+        };
+    });
+});
+</script>
+
 
 <script type="text/javascript">
 // From: http://stackoverflow.com/questions/17365821/using-jquery-autocomplete-with-flask
 // Highlight matched text: http://salman-w.blogspot.com/2013/12/jquery-ui-autocomplete-examples.html#example-4
+// ** Example 1 ** 
 $(function() {
 	function highlightText(text, $node) {
 				var searchText = $.trim(text).toLowerCase(), currentNode = $node.get(0).firstChild, matchIndex, newTextNode, newSpanNode;
@@ -64,17 +98,18 @@ $(function() {
         }).done(function (data) {
             $('#autocomplete').autocomplete({
             	//source: data.json_list,
-				source: data.matching_results,			 
+				      source: data.matching_results,			 
             	minLength: 2
             }).data("ui-autocomplete")._renderItem = function(ul, item) {
 				var $a = $("<a></a>").text(item.label);
 				highlightText(this.term, $a);
 				return $("<li></li>").append($a).appendTo(ul);
 			};
-        });
     });
+});
 
 
+// ** Example 2 ** 
 // Category autocomplete widget with matching text highlighting
 // https://jqueryui.com/autocomplete/#categories
   $.widget( "custom.catcomplete", $.ui.autocomplete, {
@@ -98,7 +133,6 @@ $(function() {
       });
     }
   });
-
 
   $(function() {
   	function highlightText(text, $node) {
