@@ -12,17 +12,22 @@ $(document).ready(function() {
 });
 </script>
 
-
+<div class="navbar-fixed">
 <nav class="blue" role="navigation">
   <div class="nav-wrapper container">
-  <a id="logo-container" href="#" class="brand-logo">Flask Autocomplete Demo</a>
+  <a id="logo-container" href="#" class="brand-logo">Autocomplete Demos</a>
     <ul class="right hide-on-med-and-down">
+      <li><a href="{{ url_for('jQueryExamples') }}">jQuery</a></li>
+      <li><a href="{{ url_for('typeaheadExamples') }}">MaterialTags</a></li>
       <li><a href="http://stackoverflow.com/questions/34704997/jquery-autocomplete-in-flask" target="_blank">SO Post</a></li>
     </ul>
 
     <ul id="nav-mobile" class="side-nav">
+      <li><a href="https://jqueryui.com/autocomplete/#categories" target="_blank">jQuery</a></li>
+      <li><a href="http://henrychavez.github.io/materialize-tags/examples/" target="_blank">MaterialTags</a></li>
       <li><a "href=http://stackoverflow.com/questions/34704997/jquery-autocomplete-in-flask" target="_blank">SO Post</a></li>
     </ul>
     <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
   </div>
 </nav>
+</div>
