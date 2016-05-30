@@ -60,6 +60,19 @@
   background-color: #428bca;
   cursor: pointer;
 }
+
+/*  http://jsfiddle.net/sherbrow/khsss/1/ */
+.typeahead + .dropdown-menu .active > a,
+.typeahead + .dropdown-menu .active > a:hover {
+    color: #ffffff;
+    background-color: #FF77FF;
+    background-image: -moz-linear-gradient(top, #FF77FF, #FF44FF);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#FF77FF), to(#FF44FF));
+    background-image: -webkit-linear-gradient(top, #FF77FF, #FF44FF);
+    background-image: -o-linear-gradient(top, #FF77FF, #FF44FF);
+    background-image: linear-gradient(to bottom, #FF77FF, #FF44FF);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF77FF', endColorstr='#FF44FF', GradientType=0);
+}
 </style>
 
 
@@ -117,11 +130,55 @@
 
 
 <script type="text/javascript">
+// https://github.com/twitter/typeahead.js/issues/1195
 $('body').on("mouseover", ".tt-suggestion", function () {
     $('.tt-suggestion').removeClass('tt-cursor');
     $(this).addClass('tt-cursor');
 });
 </script>
+
+
+<!-- Example 1 -->
+<script>
+var states = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.whitespace,
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  local: ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
+  'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
+  'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
+  'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
+  'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+  'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
+  'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
+  'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
+  'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+  ]
+});
+
+// Basic Typeahead (no Tags)
+// $('#the-basics .typeahead').typeahead({
+//   hint: true,
+//   highlight: true,
+//   minLength: 1
+// },
+// {
+//   name: 'states',
+//   source: states
+// });
+
+// Material Tags display
+$('#the-basics .typeahead').materialtags({
+  maxTags: 3,
+  onTagExists: function(item, $tag) {
+        $tag.hide().fadeIn();
+    },
+  typeaheadjs: {
+    name: 'states',
+    source: states
+  }
+});
+</script>
+
 
 <!-- Example 2 -->
 <script>
@@ -275,7 +332,7 @@ $(function() {
       name: 'cities',
       displayKey: 'name',
       valueKey: 'name',
-      source: cities
+      source: cities.ttAdapter()
     }
   });
 });
