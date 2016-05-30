@@ -31,9 +31,11 @@
 	text-decoration: underline;
 	color: orange;
 }
+href{
+  color: red;
+}
 </style>
 
-<br><br>
 
 <div class="container">
 	Example 1 <br> Autocomplete Demo: <input name="autocomplete" type="text" id="autocomplete" placeholder="Select a resource or enter your own, e.g. Wormbase"></input>
@@ -45,13 +47,197 @@
 </div>
 <br><br><br><br>
 <div class="container">
-  Example 3 <br> Category Autocomplete Demo with Sending data to Autocomplete: <label for="search-post-data"></label>
+  Example 3 <br> Autocomplete Demo with Sending data to Autocomplete: <label for="search-post-data"></label>
   <input id="search-post-data" name="search-post-data" placeholder="Select a resource or enter your own, e.g. Wormbase"></input>
+</div>
+<br><br><br><br>
+<div class="container" id="the-basics">
+  Example 4 - Autocomplete using TypeaheadJS - The Basics <br>
+  <input class="typeahead" type="text" placeholder="States of USA">
+</div>
+<br><br><br><br>
+
+
+<div class="container">
+   Example 4a - Autocomplete using TypeaheadJS - Using Bloodhound <br>
+  <div id="bloodhound">
+    <!-- <label for="tags">Resources</label> -->
+    <input class="typehead-input" type="text" data-role="materialtags" placeholder="Select Resource">
+  </div>
 </div>
 
 
+<br><br><br><br>
+<div class="container" id="example5">
+  Example 5 - Autocomplete using Bloodhound - Display Tags
+  <input type="text" value="Amsterdam,Paris" class="typeahead" data-role="materialtags"/>
+</div>
+<br><br><br><br>
+<br><br><br><br>
+<br><br><br><br>
+
+
+<!-- Example 5 -->
+<script>
+$(function() {
+  var cities = new Bloodhound({
+      // datumTokenizer: function(datum) {
+      //   return Bloodhound.tokenizers.whitespace(datum.label)
+      // },
+      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+      queryTokenizer: Bloodhound.tokenizers.whitespace,
+      prefetch: {
+        url: '{{ url_for("bloohdhoundRemote") }}',
+        'cache': false,
+        filter: function(response) {
+          console.log("City Names:", response.citynames)
+          return $.map(response.citynames, function(cityname) {
+            return { name: cityname };
+          });
+        }
+      }
+  });
+
+  cities.initialize();
+
+  $('#example5 input').materialtags({
+    typeaheadjs: {
+      name: 'cities',
+      displayKey: 'name',
+      valueKey: 'name',
+      source: cities
+    }
+  });
+});
+</script>
+
+
+<!-- Example 4 -->
+<script>
+var resources = new Bloodhound({
+  datumTokenizer: function(datum) {
+    return Bloodhound.tokenizers.whitespace(datum.label)
+  },
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  //prefetch: 'http://twitter.github.io/typeahead.js/data/films/post_1960.json',
+  prefetch: {
+    url: '{{ url_for("bloohdhoundRemote") }}',
+    'cache': false,
+    filter: function(response) {
+      console.log("Data: ", response.resource_list)
+      return response.resource_list;
+    }
+  }
+});
+
+  // datumTokenizer: Bloodhound.tokenizers.whitespace,
+  // queryTokenizer: Bloodhound.tokenizers.whitespace,
+  // `states` is an array of state names defined in "The Basics"
+  // local: ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
+  // 'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
+  // 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
+  // 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
+  // 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+  // 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
+  // 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
+  // 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
+  // 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+  // ]
+  //prefetch: 'https://github.com/twitter/typeahead.js/blob/gh-pages/data/countries.json'
+
+
+// bestPictures.add([{
+//     "year": "1964",
+//     "value": "My awesome life!",
+//     "tokens": [
+//       "My",
+//       "Awesome",
+//       "Life"]
+//     }]);
+
+resources.add([{"value": "MIR:00000777", "label": "My Added Resource"}]);
+
+resources.initialize();
+
+// $('#bloodhound .typeahead').typeahead({
+//   hint: true,
+//   highlight: true,
+//   minLength: 1
+// },
+// {
+//   name: 'resources',
+//   display: function(response) {
+//     return response.label;
+//   },
+//   source: resources.ttAdapter()
+// });
+
+//$('#bloodhound .typeahead').typeahead({
+$('#bloodhound .typehead-input').materialtags({
+  maxTags: 3,
+  onTagExists: function(item, $tag) {
+        $tag.hide().fadeIn();
+    },
+    // hint: true,
+    // highlight: true,
+    // minLength: 1,
+  typeaheadjs: {
+    name: 'resources',
+    displayKey: 'label',
+    valueKey: 'value',
+    source: resources.ttAdapter()
+  }, 
+  // freeInput: true
+});
+
+//Use TypeaheadJS for Autocomplete
+// var substringMatcher = function(strs) {
+//   return function findMatches(q, cb) {
+//     var matches, substringRegex;
+
+//     // an array that will be populated with substring matches
+//     matches = [];
+
+//     // regex used to determine if a string contains the substring `q`
+//     substrRegex = new RegExp(q, 'i');
+
+//     // iterate through the pool of strings and for any string that
+//     // contains the substring `q`, add it to the `matches` array
+//     $.each(strs, function(i, str) {
+//       if (substrRegex.test(str)) {
+//         matches.push(str);
+//       }
+//     });
+
+//     cb(matches);
+//   };
+// };
+
+// var states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
+//   'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
+//   'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
+//   'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
+//   'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+//   'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
+//   'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
+//   'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
+//   'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+// ];
+
+// $('#the-basics .typeahead').typeahead({
+//   hint: true,
+//   highlight: true,
+//   minLength: 1
+// },
+// {
+//   name: 'states',
+//   source: substringMatcher(states)
+// });
+</script>
+
+
+<!-- Example 3 -->
 <script type="text/javascript">
-// ** Example 3 **
 // Send data to autocomplete to dynamically extend data source
 $(function() {
   var keypath = "My Test Keypath"
@@ -77,10 +263,10 @@ $(function() {
 </script>
 
 
+<!-- Example 1 -->
 <script type="text/javascript">
 // From: http://stackoverflow.com/questions/17365821/using-jquery-autocomplete-with-flask
-// Highlight matched text: http://salman-w.blogspot.com/2013/12/jquery-ui-autocomplete-examples.html#example-4
-// ** Example 1 ** 
+// Highlight matched text: http://salman-w.blogspot.com/2013/12/jquery-ui-autocomplete-examples.html#example-4 
 $(function() {
 	function highlightText(text, $node) {
 				var searchText = $.trim(text).toLowerCase(), currentNode = $node.get(0).firstChild, matchIndex, newTextNode, newSpanNode;
@@ -107,9 +293,11 @@ $(function() {
 			};
     });
 });
+</script>
 
 
-// ** Example 2 ** 
+<!-- Example 2 -->
+<script>
 // Category autocomplete widget with matching text highlighting
 // https://jqueryui.com/autocomplete/#categories
   $.widget( "custom.catcomplete", $.ui.autocomplete, {
@@ -160,42 +348,6 @@ $(function() {
 		};
 	});
   });
-
-
-
-// From: http://stackoverflow.com/questions/34704997/jquery-autocomplete-in-flask?rq=1
-// $(function() {
-// 	function highlightText(text, $node) {
-// 				var searchText = $.trim(text).toLowerCase(), currentNode = $node.get(0).firstChild, matchIndex, newTextNode, newSpanNode;
-// 				while ((matchIndex = currentNode.data.toLowerCase().indexOf(searchText)) >= 0) {
-// 					newTextNode = currentNode.splitText(matchIndex);
-// 					currentNode = newTextNode.splitText(searchText.length);
-// 					newSpanNode = document.createElement("span");
-// 					newSpanNode.className = "highlight";
-// 					currentNode.parentNode.insertBefore(newSpanNode, currentNode);
-// 					newSpanNode.appendChild(newTextNode);
-// 				}
-// 			}
-//     $("#autocomplete").autocomplete({
-//         source:function(request, response) {
-//             $.getJSON("{{url_for('autocomplete')}}",{
-//                 q: request.term, // in flask, "q" will be the argument to look for using request.args
-//             }, function(data) {
-//                 response(data.matching_results); // matching_results from jsonify
-//             });
-//         },
-//         minLength: 2,
-//         select: function(event, ui) {
-//             console.log(ui.item.value); // not in your question, but might help later
-//         }
-//     //}).autocomplete("widget").addClass("fixed-height"); //Scroll selections
-//     // Highlight individual items in matched text
-//     }).data("ui-autocomplete")._renderItem = function(ul, item) {
-//     	var $a = $("<a></a>").text(item.label);
-//     	highlightText(this.term, $a);
-// 		return $("<li></li>").append($a).appendTo(ul);
-// 	};
-// });
 </script>
 
 {% endblock %}
