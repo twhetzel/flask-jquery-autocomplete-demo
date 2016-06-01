@@ -87,46 +87,42 @@
 
   <section>
     <div class="container" id="the-basics">
-      <div class="row>">
+      <div class="row">
         <p class="caption">Example 1 - Autocomplete using TypeaheadJS - The Basics</p>
-        <input class="typeahead" type="text" placeholder="States of USA">
-      </div>
-    </div>
-
-    <br><br><br><br>
-
-    <div class="container">
-      <div class="row>">
-       <p class="caption">Example 2 - Autocomplete using TypeaheadJS - Using Bloodhound</p> 
-       <br>
-        <div id="bloodhound">
-          <!-- <label for="tags">Resources</label> -->
-          <input class="typehead-input" type="text" data-role="materialtags" placeholder="Select Resource">
+        <div class="typeahead-demo">
+          <input type="text" data-role="materialtags" placeholder="States of USA"/>
         </div>
       </div>
     </div>
 
     <br><br><br><br>
 
-    <div class="container" id="example5">
-      <div class="row>">
-       <p class="caption">Example 3 - Autocomplete using TypeaheadJS - Bloodhound with Materialize Tags</p><br>
-      <input type="text" value="Amsterdam,Paris" class="typeahead" data-role="materialtags"/>
+    <div class="container">
+      <div class="row">
+       <p class="caption">Example 2 - Autocomplete using TypeaheadJS - Using Bloodhound</p> 
+       <br>
+        <div id="bloodhound">
+          <!-- <label for="tags">Resources</label> -->
+          <input class="typehead-input" type="text" data-role="materialtags" placeholder="Select Resource"/>
+        </div>
+      </div>
+    </div>
+
+    <br><br><br><br>
+
+    <div class="container" id="cities">
+      <div class="row">
+       <p class="caption">Example 3 - Autocomplete using TypeaheadJS - Bloodhound with Materialize Tags</p>
+       <div class="example3">
+       <!--  <label for="demo">Cities</label> -->
+          <input class="ex3" type="text" data-role="materialtags" value="Amsterdam,Paris" placeholder="Cities"/>
+        </div>
+      </div>
     </div>
 
     <br><br><br><br>
   </section>
 </main>
-
-<!-- Compiled and minified JavaScript -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
-
-<!-- Materialize Tags Input --> 
-<script type="text/javascript" src="./static/js/materialize-tags.js"></script>
-
-<!-- TypeaheadJS Imports -->
-<script type="text/javascript" src="./static/js/typeaheadbundle.js"></script>
-
 
 
 <script type="text/javascript">
@@ -167,11 +163,11 @@ var states = new Bloodhound({
 // });
 
 // Material Tags display
-$('#the-basics .typeahead').materialtags({
+$('div.typeahead-demo input').materialtags({
   maxTags: 3,
-  onTagExists: function(item, $tag) {
-        $tag.hide().fadeIn();
-    },
+  // onTagExists: function(item, $tag) {
+  //       $tag.hide().fadeIn();
+  //   },
   typeaheadjs: {
     name: 'states',
     source: states
@@ -306,35 +302,33 @@ $('#bloodhound .typehead-input').materialtags({
 
 <!-- Example 3 -->
 <script>
-$(function() {
-  var cities = new Bloodhound({
-      // datumTokenizer: function(datum) {
-      //   return Bloodhound.tokenizers.whitespace(datum.label)
-      // },
-      datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
-      queryTokenizer: Bloodhound.tokenizers.whitespace,
-      prefetch: {
-        url: '{{ url_for("bloohdhoundRemote") }}',
-        'cache': false,
-        filter: function(response) {
-          console.log("City Names:", response.citynames)
-          return $.map(response.citynames, function(cityname) {
-            return { name: cityname };
-          });
-        }
+var cities = new Bloodhound({
+    // datumTokenizer: function(datum) {
+    //   return Bloodhound.tokenizers.whitespace(datum.label)
+    // },
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('name'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    prefetch: {
+      url: '{{ url_for("bloohdhoundRemote") }}',
+      'cache': false,
+      filter: function(response) {
+        console.log("City Names:", response.citynames)
+        return $.map(response.citynames, function(cityname) {
+          return { name: cityname };
+        });
       }
-  });
-
-  cities.initialize();
-
-  $('#example5 input').materialtags({
-    typeaheadjs: {
-      name: 'cities',
-      displayKey: 'name',
-      valueKey: 'name',
-      source: cities.ttAdapter()
     }
-  });
+});
+
+cities.initialize();
+
+$('div.example3 input').materialtags({
+  typeaheadjs: {
+    name: 'cities',
+    displayKey: 'name',
+    valueKey: 'name',
+    source: cities
+  }
 });
 </script>
 
