@@ -12,6 +12,37 @@ from flask import make_response
 app = Flask(__name__)
 
 
+# Route to jQuery Examples
+@app.route('/jQueryExamples', methods=['GET'])
+def jQueryExamples():
+	print "Show jQuery Examples"
+	return render_template('jQueryExamples.html')
+
+
+# Route to Typeahead Examples
+@app.route('/materialTagsExamples', methods=['GET'])
+def materialTagsExamples():
+	print "Show mMterialTags Examples Examples"
+	return render_template('materialTagsExamples.html')
+
+
+# ** Example 5 **
+# Autocomplete with Bloodhound with Remote data
+@app.route('/bloohdhoundRemote', methods=['GET', 'POST'])
+def bloohdhoundRemote():
+	print "** bloohdhoundRemote() called"
+	if request.method == 'POST':
+		print "POST request"
+	else:
+		print "GET request"
+
+	citynames = ['Amsterdam', 'London', 'Paris', 'Washington', 'Sydney', 'Melbourne']
+	
+	resource_list = [{'value': 'MIR:00000555', 'label': 'My WormBase RNAi'}, \
+		{'value': 'MIR:11100545', 'label': 'My Wormpep'}]
+	return jsonify(resource_list=resource_list, citynames=citynames)
+
+
 # ** Example 3 ** 
 # Autocomplete method - called from Jinja template
 @app.route('/datcomplete', methods=['GET', 'POST'])
