@@ -42,6 +42,21 @@ def bloohdhoundRemote():
 		{'value': 'MIR:11100545', 'label': 'My Wormpep'}]
 	return jsonify(resource_list=resource_list, citynames=citynames)
 
+# ** Example 4 ** 
+# Autcomplete from multiple sources Bloodhound
+@app.route('/multipleRemote', methods=['GET', 'POST'])
+def multipleRemote():
+	print " ** multipleRemote() called"
+	if request.method == "POST":
+		print "POST request"
+	else:
+		print "GET request"
+
+	nba_teams = [{"team": "Boston Celtics"}, {"team": "Dallas Mavericks"}, {"team": "Brooklyn Nets"}]
+	nhl_teams = [{"team": "New Jersey Devils"}, {"team": "New York Islanders"}, {"team": "Philadelphia Flyers"}, {"team": "Pittsburgh Penguins"}]
+
+	return jsonify(nba_teams=nba_teams, nhl_teams=nhl_teams)
+
 
 # ** Example 3 ** 
 # Autocomplete method - called from Jinja template
