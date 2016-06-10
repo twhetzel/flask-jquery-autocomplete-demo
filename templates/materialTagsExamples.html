@@ -73,6 +73,12 @@
     background-image: linear-gradient(to bottom, #FF77FF, #FF44FF);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FF77FF', endColorstr='#FF44FF', GradientType=0);
 }
+
+#multiple-datasets .league-name {
+  margin: 0 20px 5px 20px;
+  padding: 3px 0;
+  border-bottom: 1px solid #ccc;
+}
 </style>
 
 
@@ -110,6 +116,7 @@
 
     <br><br><br><br>
 
+    <!-- Example 3 --> 
     <div class="container" id="cities">
       <div class="row">
        <p class="caption">Example 3 - Autocomplete using TypeaheadJS - Bloodhound with Materialize Tags</p>
@@ -119,6 +126,21 @@
         </div>
       </div>
     </div>
+
+    <br><br><br><br>
+
+    <!-- Example 4 -->
+    <!-- http://twitter.github.io/typeahead.js/examples/#multiple-datasets --> 
+    <div class="container">
+      <div class="row">
+        <p class="caption">Example 4 - Autocomplete using TypeaheadJS (Multiple Data Sources) - Bloodhound/Materialize Tags</p>
+        <div id="multiple-datasets">
+          <!-- <label for="multiple-data-sources-demo">Mutiple Data Sources</label> -->
+          <input class="typeahead-multiple" type="text" placeholder="NBA and NHL teams"/>
+        </div>
+      </div>
+    </div>
+
 
     <br><br><br><br>
   </section>
@@ -251,7 +273,7 @@ $('#bloodhound .typehead-input').materialtags({
     valueKey: 'value',
     source: resources.ttAdapter()
   }, 
-  // freeInput: true
+  //freeInput: true
 });
 
 //Use TypeaheadJS for Autocomplete
@@ -331,5 +353,64 @@ $('div.example3 input').materialtags({
   }
 });
 </script>
+
+
+<!-- Example 4 - Multiple Datasets -->
+<script type="text/javascript">
+var nbaTeams = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('team'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: {
+    url: '{{ url_for("multipleRemote") }}',
+    'cache': false,
+    filter: function(response) {
+      console.log("NBA Data: ", response.nba_teams)
+      return response.nba_teams;
+    }
+  }
+});
+
+var nhlTeams = new Bloodhound({
+  datumTokenizer: Bloodhound.tokenizers.obj.whitespace('team'),
+  queryTokenizer: Bloodhound.tokenizers.whitespace,
+  prefetch: {
+    url: '{{ url_for("multipleRemote") }}',
+    'cache': false,
+    filter: function(response) {
+      console.log("NHL Data: ", response.nhl_teams)
+      return response.nhl_teams;
+    }
+  }
+});
+
+$('#multiple-datasets .typeahead-multiple').typeahead({
+  highlight: true
+},
+{
+  name: 'nba_teams',
+  //display: 'team',
+  display: function(response) {
+    return response.team;
+  },
+  source: nbaTeams,
+  templates: {
+    header: '<h3 class="league-name">NBA Teams</h3>'
+  }
+},
+{
+  name: 'nhl_teams',
+  display: function(response){
+    return response.team;
+  },
+  //display: 'team',
+  source: nhlTeams,
+  templates: {
+    header: '<h3 class="league-name">NHL Teams</h3>'
+  }
+});
+</script>
+
+
+
 
 {% endblock %}
