@@ -60,7 +60,7 @@ $(document).ready(function() {
 <script type="text/javascript">
 $(document).ready(function() {
 	var keypath = "My Test Keypath"
-  	console.log(keypath)
+  	//console.log(keypath)
 
 	// function matchStart (term, text) {
 	// 	if (text.toUpperCase().indexOf(term.toUpperCase()) == 0) {
@@ -74,15 +74,99 @@ $(document).ready(function() {
 		$(".js-example-tokenizer-ajax-data").select2({
 			//matcher: oldMatcher(matchStart),
 			tags: true, //Allows for free text input of tag values
+			createTag: function (params) {
+			    return {
+			      id: params.term,
+			      text: params.term,
+			      newOption: true
+			    }
+			},
+			templateResult: function (data) {
+				var $result = $("<span></span>");
+				$result.text(data.text);
+				if (data.newOption) {
+					$result.append(" <em>(new)</em>");
+				}
+				return $result;
+			},
 			placeholder: 'Select an option',
 			maximumSelectionLength: 3,
 			ajax: {
 			    url: '{{ url_for("select2Autocomplete") }}',
-			    // Can't use free text input with POST???
 			    contentType: 'application/json',
 		        method: "POST",
 		        dataType : 'json',
 			    data: JSON.stringify({variable:keypath}),
+			    processResults: function (data) {
+			    	//console.log(data.resource_list)
+			    	// Map data attributes as needed to 'id' and 'text' as required by Select2
+			  //   	data = $.map(data.resource_list, function (obj) {
+			  //   		obj.text = obj.text || obj.label; // replace name with the property used for the text
+			  //   		return obj;
+					// });
+			    	return {
+			    		// results: data
+			        	results: data.resource_list
+			      	};
+			    }
+		  	}
+		});
+	//}); //End for oldMatcher
+});
+</script>
+
+<!-- Example 4 -->
+<script type="text/javascript">
+// function doSomething(keypath) {
+// 	console.log(keypath)
+// }
+
+$(document).ready(function() {
+	var keypath = "My Test Keypath"
+  	console.log(keypath)
+
+  	var myValue = document.getElementById('ex4-select').getAttribute('testValue');
+	console.log(myValue)
+
+	$('.js-example-tokenizer-ajax-data').on('select2:opening', function (evt) {
+			console.log("Opening Example 4")
+	});
+
+	// function matchStart (term, text) {
+	// 	if (text.toUpperCase().indexOf(term.toUpperCase()) == 0) {
+	// 		return true;
+	// 	}
+	// 	return false;
+	// }
+
+	// NOTE: Custom matcher matches within words, but free text input is no longer available
+	//$.fn.select2.amd.require(['select2/compat/matcher'], function (oldMatcher) {
+		$(".js-example-tokenizer-ajax-data").select2({
+			//matcher: oldMatcher(matchStart),
+			tags: true, //Allows for free text input of tag values
+			createTag: function (params) {
+			    return {
+			      id: params.term,
+			      text: params.term,
+			      newOption: true
+			    }
+			},
+			templateResult: function (data) {
+				var $result = $("<span></span>");
+				$result.text(data.text);
+				if (data.newOption) {
+					$result.append(" <em>(new)</em>");
+				}
+				return $result;
+			},
+			placeholder: 'Select an option',
+			maximumSelectionLength: 3,
+			ajax: {
+			    url: '{{ url_for("select2Autocomplete") }}',
+			    contentType: 'application/json',
+		        method: "POST",
+		        dataType : 'json',
+			    data: JSON.stringify({variable:myValue}),
 			    processResults: function (data) {
 			    	//console.log(data.resource_list)
 			    	// Map data attributes as needed to 'id' and 'text' as required by Select2
@@ -175,7 +259,7 @@ $(document).ready(function() {
 	<!-- Example 3 - Get Data from Python Script via Ajax + Free text input --> 		
 	<section>
 		<div class="container">
-			<p class="caption">Get Data from Python Script + Free text input example</p>
+			<p class="caption">Ex. 3 - Get Data from Python Script + Free text input example</p>
 			<div class="input-field col s12">
 				<!-- <i class="small material-icons" onclick="viewDatatypeInfo( '{{value}}' )" title="Click to view Resource" style="float: right">info</i> -->
 				<select class="js-example-tokenizer-ajax-data form-control" multiple="multiple">
@@ -188,9 +272,23 @@ $(document).ready(function() {
 	</section>
 	<br><br>
 
+	<!-- Example 4 - Get Data from Python Script via Ajax + Free text input TABLE --> 		
+	<section>
+		<div class="container">
+			<p class="caption">Ex. 4 - Get Data from Python Script + Free text input example</p>
+			<div class="input-field col s12">
+				<!-- <i class="small material-icons" onclick="viewDatatypeInfo( '{{value}}' )" title="Click to view Resource" style="float: right">info</i> -->
+				<select id="ex4-select" testValue="test4" class="js-example-tokenizer-ajax-data form-control" multiple="multiple" style="width: 50%">
+					<!-- <option>red</option>
+					<option>blue</option>
+					<option>green</option> -->
+				</select>
+			</div>
+		</div>
+	</section>
+	<br><br>
 
 	<br><br><br><br>
-
 </main>
 
 {% endblock %}
