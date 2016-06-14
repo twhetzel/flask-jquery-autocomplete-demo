@@ -102,47 +102,6 @@ $(document).ready(function() {
 </script>
 
 
-<!-- Example 4 - Automatic Tokenization - All Resources and Pattern Match --> 
-<script type="text/javascript">
-$(document).ready(function() {
-	var keypath = "My Test Keypath for POST"
-  	console.log(keypath)
-
-	$('.js-example-tokenizer-custom-data').select2({
-		tags: true,
-		maximumSelectionLength: 3,
-		// Change data to be result of POST below
-		data: [{text: 'Group label',
-			children: [{
-				id: 'value one',
-				text: 'Text one to display'
-	    	}, {
-	    		id: 'value two',
-				text: 'Text two to display'
-    		}]
-    	}]
-	});
-
-	// Change to function with a return result
-	$('.js-example-tokenizer-custom-data').on("select2:opening", function (e) { 
-		console.log("Select Opening");
-		var data = $.post('{{ url_for("select2AutocompleteExamplePOST", variable='foo') }}');
-		console.log(data)
-	});
-
-	// function getPatternMatchDataForAutocomplete() {
-	//     console.log("Custom Data Function")
-	// 	//Automatic Tokenization - All Resources and Pattern Match
-	// 	$(".js-example-tokenizer-custom-data").select2({
-	// 		tags: true,
-	// 		tokenSeparators: [',', ' '],
-	// 		maximumSelectionLength: 1
-	// 	})
-	// };
-});
-</script>
-
-
 <main>
 	<section>
 		<div class="container">
@@ -220,22 +179,6 @@ $(document).ready(function() {
 			<div class="input-field col s12">
 				<!-- <i class="small material-icons" onclick="viewDatatypeInfo( '{{value}}' )" title="Click to view Resource" style="float: right">info</i> -->
 				<select class="js-example-tokenizer-ajax-data form-control" multiple="multiple">
-					<option>red</option>
-					<option>blue</option>
-					<option>green</option>
-				</select>
-			</div>
-		</div>
-	</section>
-	<br><br>
-
-	<!-- Example 4 - Automatic Tokenization - All Resources and Pattern Match --> 		
-	<section>
-		<div class="container">
-			<p class="caption">Automatic Tokenization - All Resources and Custom Data for Pattern Matches example</p>
-			<div class="input-field col s12">
-				<i class="small material-icons" onclick="viewDatatypeInfo( '{{value}}' )" title="Click to view Resource" style="float: right">info</i>
-				<select class="js-example-tokenizer-custom-data form-control" multiple="multiple">
 					<!-- <option>red</option>
 					<option>blue</option>
 					<option>green</option> -->
