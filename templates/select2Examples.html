@@ -1,0 +1,253 @@
+{% extends "main-select2.html" %}
+{% block content %}
+{% include "header.html" %}
+
+
+<script type="text/javascript">
+$(document).ready(function() {
+	//$('select').material_select();
+
+	$(".js-example-basic-single").select2();
+
+  	$(".js-example-basic-multiple").select2();
+
+	// Loading Remote data
+	$(".js-data-example-ajax").select2({
+	  ajax: {
+	    url: "https://api.github.com/search/repositories",
+	    //url: '{{ url_for("select2Autocomplete") }}',
+	    dataType: 'json',
+	    delay: 250,
+	    data: function (params) {
+	      return {
+	        q: params.term, // search term
+	        page: params.page
+	      };
+	    },
+	    processResults: function (data, params) {
+	      // parse the results into the format expected by Select2
+	      // since we are using custom formatting functions we do not need to
+	      // alter the remote JSON data, except to indicate that infinite
+	      // scrolling can be used
+	      params.page = params.page || 1;
+
+	      return {
+	        results: data.items,
+	        pagination: {
+	          more: (params.page * 30) < data.total_count
+	        }
+	      };
+	    },
+	    cache: true
+	  },
+	  escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+	  minimumInputLength: 1
+	  //templateResult: formatRepo, // omitted for brevity, see the source of this page
+	  //templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+	});
+
+	// Automatic tokenization
+	$(".js-example-tokenizer").select2({
+		tags: true,
+		tokenSeparators: [',', ' '],
+		maximumSelectionLength: 2
+	})
+});
+</script>
+
+
+<!-- Example 3 - Get data from Python method + Free text input -->
+<script type="text/javascript">
+$(document).ready(function() {
+	var keypath = "My Test Keypath"
+  	console.log(keypath)
+
+	// function matchStart (term, text) {
+	// 	if (text.toUpperCase().indexOf(term.toUpperCase()) == 0) {
+	// 		return true;
+	// 	}
+	// 	return false;
+	// }
+
+	// NOTE: Custom matcher matches within words, but free text input is no longer available
+	//$.fn.select2.amd.require(['select2/compat/matcher'], function (oldMatcher) {
+		$(".js-example-tokenizer-ajax-data").select2({
+			//matcher: oldMatcher(matchStart),
+			tags: true, //Allows for free text input of tag values
+			placeholder: 'Select an option',
+			maximumSelectionLength: 3,
+			ajax: {
+			    url: '{{ url_for("select2Autocomplete") }}',
+			    // Can't use free text input with POST???
+			    contentType: 'application/json',
+		        method: "POST",
+		        dataType : 'json',
+			    data: JSON.stringify({variable:keypath}),
+			    processResults: function (data) {
+			    	//console.log(data.resource_list)
+			    	// Map data attributes as needed to 'id' and 'text' as required by Select2
+			  //   	data = $.map(data.resource_list, function (obj) {
+			  //   		obj.text = obj.text || obj.label; // replace name with the property used for the text
+			  //   		return obj;
+					// });
+			    	return {
+			    		// results: data
+			        	results: data.resource_list
+			      	};
+			    }
+		  	}
+		});
+	//}); //End for oldMatcher
+});
+</script>
+
+
+<!-- Example 4 - Automatic Tokenization - All Resources and Pattern Match --> 
+<script type="text/javascript">
+$(document).ready(function() {
+	var keypath = "My Test Keypath for POST"
+  	console.log(keypath)
+
+	$('.js-example-tokenizer-custom-data').select2({
+		tags: true,
+		maximumSelectionLength: 3,
+		// Change data to be result of POST below
+		data: [{text: 'Group label',
+			children: [{
+				id: 'value one',
+				text: 'Text one to display'
+	    	}, {
+	    		id: 'value two',
+				text: 'Text two to display'
+    		}]
+    	}]
+	});
+
+	// Change to function with a return result
+	$('.js-example-tokenizer-custom-data').on("select2:opening", function (e) { 
+		console.log("Select Opening");
+		var data = $.post('{{ url_for("select2AutocompleteExamplePOST", variable='foo') }}');
+		console.log(data)
+	});
+
+	// function getPatternMatchDataForAutocomplete() {
+	//     console.log("Custom Data Function")
+	// 	//Automatic Tokenization - All Resources and Pattern Match
+	// 	$(".js-example-tokenizer-custom-data").select2({
+	// 		tags: true,
+	// 		tokenSeparators: [',', ' '],
+	// 		maximumSelectionLength: 1
+	// 	})
+	// };
+});
+</script>
+
+
+<main>
+	<section>
+		<div class="container">
+			<div class="row>">
+	        	<h5>Examples using <a href="https://select2.github.io/examples.html" target="_blank">Select2</a> with autocomplete.</h5>
+	    	</div>
+	    </div>
+  	</section>
+
+  	<!-- Single select box example -->
+  	<section>
+		<div class="container">
+			<div class="row">
+			<p class="caption">Single Select box example</p>
+					<div class="input-field col s12">
+					<select class="js-example-basic-single" id="id_label_single">
+			  			<option value="AL">Alabama</option>
+			  			<option value="WY">California</option>
+			  			<option value="WY">Delaware</option>
+			  			<option value="WY">Wyoming</option>
+					</select>
+					<label for="id_label_single">
+				</div>
+			</div>
+		</div>
+	</section>
+	<br><br>
+
+	<!-- Multiple Select boxes. NOTE: No free text input -->
+	<section>
+		<div class="container">
+			<p class="caption">Multiple Select box example</p>
+			<div class="input-field col s12">
+			<select class="js-example-basic-multiple" multiple="multiple">
+	  			<option value="AL">Alabama</option>
+	  			<option value="WY">Wyoming</option>
+			</select>
+		</div>
+		</div>
+	</section>
+	<br><br>
+
+	<!-- Loading Remote data. NOTE: No free text input -->
+	<section>
+		<div class="container">
+			<p class="caption">Remote Select box example</p>
+			<div class="input-field col s12">
+			<select class="js-data-example-ajax">
+  				<option value="3620194" selected="selected">select2/select2</option>
+			</select>
+		</div>
+		</div>
+	</section>
+	<br><br>
+
+	<!-- Automatic Tokenization --> 		
+	<section>
+		<div class="container">
+			<p class="caption">Automatic Tokenization example</p>
+			<div class="input-field col s12">
+				<select class="js-example-tokenizer form-control" multiple="multiple">
+					<option>red</option>
+					<option>blue</option>
+					<option>green</option>
+				</select>
+			</div>
+		</div>
+	</section>
+	<br><br>
+
+	<!-- Example 3 - Get Data from Python Script via Ajax + Free text input --> 		
+	<section>
+		<div class="container">
+			<p class="caption">Get Data from Python Script + Free text input example</p>
+			<div class="input-field col s12">
+				<!-- <i class="small material-icons" onclick="viewDatatypeInfo( '{{value}}' )" title="Click to view Resource" style="float: right">info</i> -->
+				<select class="js-example-tokenizer-ajax-data form-control" multiple="multiple">
+					<option>red</option>
+					<option>blue</option>
+					<option>green</option>
+				</select>
+			</div>
+		</div>
+	</section>
+	<br><br>
+
+	<!-- Example 4 - Automatic Tokenization - All Resources and Pattern Match --> 		
+	<section>
+		<div class="container">
+			<p class="caption">Automatic Tokenization - All Resources and Custom Data for Pattern Matches example</p>
+			<div class="input-field col s12">
+				<i class="small material-icons" onclick="viewDatatypeInfo( '{{value}}' )" title="Click to view Resource" style="float: right">info</i>
+				<select class="js-example-tokenizer-custom-data form-control" multiple="multiple">
+					<!-- <option>red</option>
+					<option>blue</option>
+					<option>green</option> -->
+				</select>
+			</div>
+		</div>
+	</section>
+	<br><br>
+
+
+	<br><br><br><br>
+
+</main>
+
+{% endblock %}
