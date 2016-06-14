@@ -52,8 +52,8 @@ def multipleRemote():
 	else:
 		print "GET request"
 
-	nba_teams = [{"team": "Boston Celtics"}, {"team": "Dallas Mavericks"}, {"team": "Brooklyn Nets"}]
-	nhl_teams = [{"team": "New Jersey Devils"}, {"team": "New York Islanders"}, {"team": "Philadelphia Flyers"}, {"team": "Pittsburgh Penguins"}]
+	nba_teams = [{"team": "Boston Celtics NBA"}, {"team": "Dallas Mavericks NBA"}, {"team": "Brooklyn NBA"}]
+	nhl_teams = [{"team": "New Jersey NHL"}, {"team": "Boston NHL"}, {"team": "Philadelphia NHL"}]
 
 	return jsonify(nba_teams=nba_teams, nhl_teams=nhl_teams)
 
@@ -117,6 +117,33 @@ def catcomplete():
  	{'value': 'MIR:00000555', 'label': 'Resource 5', 'category': ''}, \
  	{'value': 'MIR:00000666', 'label': 'Resource 6', 'category': ''}]
 	return jsonify(category_data=category_data)
+
+
+## Select2 Examples ##
+@app.route('/select2Examples', methods=['GET'])
+def select2Examples():
+	return render_template('select2Examples.html')
+
+
+@app.route('/select2Autocomplete', methods=['GET', 'POST'])
+def select2Autocomplete():
+	print "** DEBUG: select2Autocomplete() called"
+	
+	if request.method == 'POST':
+		print "POST request"
+		jsonData = request.json['variable']
+		print jsonData
+	else:
+		print "GET request"
+
+	resource_list = [{'text': 'Pattern Match', 'children': [{'id': 'value one','text': 'Text one to display'}, \
+	{'id': 'value two','text': 'Text two to display'}]}, {'text': 'All Resources', 'children': \
+	[{'id': 'resource one','text': 'Resource one to display'}, \
+	{'id': 'resource two','text': 'Resource two to display'}]}]
+
+	# resource_list = [{'id': 'MIR:00000555', 'text': 'My WormBase RNAi'}, \
+	# 	{'id': 'MIR:11100545', 'text': 'My Wormpep'}, {'id': 'MIR:11100777', 'text': 'A Test Resource'}]
+	return jsonify(resource_list=resource_list)
 
 
 # Route to home page
